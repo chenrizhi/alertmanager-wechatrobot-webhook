@@ -1,24 +1,22 @@
-FROM --platform=linux/amd64 amd64/alpine:3.12.0
-#FROM --platform=linux/amd64 golang:1.17-alpine
+FROM golang:1.20-alpine
+RUN apk add git make \
+    && git clone https://github.com/chenrizhi/alertmanager-wechatrobot-webhook.git \
+    && cd alertmanager-wechatrobot-webhook \
+    && make
 
-# docker pull golang:1.17-alpine@sha256:ad6c114a2c858710c4db54f6c89d0e76f753831f01827252064be0017612fecc
+
+FROM alpine:3.18.2
 
 ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 ENV TZ=Asia/Shanghai
 
-RUN apk update && apk upgrade \
-    && apk add ca-certificates\
-    && update-ca-certificates \
-    && apk --no-cache add openssl wget \
-	&& apk add --no-cache bash tzdata curl \
-	&& set -ex \
-    && mkdir -p /usr/bin \
-    && mkdir -p /usr/sbin \
-    && mkdir -p /data/wechat-webhook/
+RUN set -ex \
+    && apk update && apk upgrade \
+    && apk --no-cache add openssl wget bash tzdata curl ca-certificates \
+    && update-ca-certificates
 
-ADD bin/wechat-webhook /usr/bin/
-ADD start.sh /data/wechat-webhook/
+COPY --from=0 /go/alertmanager-wechatrobot-webhook/bin/wechat-webhook /usr/local/bin/wechat-webhook
 
-WORKDIR /data/wechat-webhook/
+ENTRYPOINT ["wechat-webhook"]

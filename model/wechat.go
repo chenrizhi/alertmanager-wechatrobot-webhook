@@ -1,6 +1,6 @@
 package model
 
-type WeChatkMessage struct {
+type WeChatMessage struct {
 }
 
 type WeChatMarkdown struct {

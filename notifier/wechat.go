@@ -10,7 +10,7 @@ import (
 	"github.com/k8stech/alertmanager-wechatrobot-webhook/transformer"
 )
 
-// Send send markdown message to dingtalk
+// Send markdown message to dingtalk
 func Send(notification model.Notification, defaultRobot string) (err error) {
 
 	markdown, robotURL, err := transformer.TransformToMarkdown(notification)

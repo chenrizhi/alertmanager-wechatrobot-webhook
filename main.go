@@ -42,7 +42,7 @@ func main() {
 			return
 		}
 
-		RobotKey := c.DefaultQuery("key", RobotKey)
+		RobotKey = c.DefaultQuery("key", RobotKey)
 
 		err = notifier.Send(notification, RobotKey)
 
