@@ -56,7 +56,7 @@ func main() {
 
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "send to wechatbot successful!"})
+		c.JSON(http.StatusOK, gin.H{"message": "send to WeChat successful!"})
 
 	})
 	_ = router.Run(addr)

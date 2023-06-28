@@ -1,5 +1,6 @@
 FROM golang:1.20-alpine
 RUN apk add git make \
+    && export GOPROXY=https://proxy.golang.com.cn,direct \
     && git clone https://github.com/chenrizhi/alertmanager-wechatrobot-webhook.git \
     && cd alertmanager-wechatrobot-webhook \
     && make
