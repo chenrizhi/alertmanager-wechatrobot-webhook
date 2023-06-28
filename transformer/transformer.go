@@ -3,11 +3,12 @@ package transformer
 import (
 	"bytes"
 	"fmt"
+	"os"
 
 	"github.com/k8stech/alertmanager-wechatrobot-webhook/model"
 )
 
-// TransformToMarkdown transform alertmanager notification to wechat markdown message
+// TransformToMarkdown transform alertmanager notification to WeChat markdown message
 func TransformToMarkdown(notification model.Notification) (markdown *model.WeChatMarkdown, robotURL string, err error) {
 
 	status := notification.Status
@@ -17,8 +18,11 @@ func TransformToMarkdown(notification model.Notification) (markdown *model.WeCha
 
 	var buffer bytes.Buffer
 
-	buffer.WriteString(fmt.Sprintf("### 当前状态:%s \n", status))
-	// buffer.WriteString(fmt.Sprintf("#### 告警项:\n"))
+	clusterEnv := os.Getenv("CLUSTER")
+	if clusterEnv != "" {
+		clusterEnv = fmt.Sprintf("[%s] ", clusterEnv)
+	}
+	buffer.WriteString(fmt.Sprintf("### %s当前状态: %s \n", clusterEnv, status))
 
 	for _, alert := range notification.Alerts {
 		labels := alert.Labels
@@ -29,7 +33,11 @@ func TransformToMarkdown(notification model.Notification) (markdown *model.WeCha
 		annotations := alert.Annotations
 		buffer.WriteString(fmt.Sprintf("> 告警主题: %s\n", annotations["summary"]))
 		buffer.WriteString(fmt.Sprintf("> 告警详情: %s\n", annotations["description"]))
-		buffer.WriteString(fmt.Sprintf("> 触发时间: %s\n\n", alert.StartsAt.Local().Format("2006-01-02 15:04:05")))
+		buffer.WriteString(fmt.Sprintf("> 告警时间: %s\n", alert.StartsAt.Local().Format("2006-01-02 15:04:05")))
+		if status == "resolved" {
+			buffer.WriteString(fmt.Sprintf("> 恢复时间: %s\n", alert.EndsAt.Local().Format("2006-01-02 15:04:05")))
+		}
+		buffer.WriteString("\n")
 	}
 
 	markdown = &model.WeChatMarkdown{

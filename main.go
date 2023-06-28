@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"flag"
+	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/k8stech/alertmanager-wechatrobot-webhook/model"
@@ -34,7 +37,9 @@ func main() {
 	router := gin.Default()
 	router.POST("/webhook", func(c *gin.Context) {
 		var notification model.Notification
-
+		body, _ := io.ReadAll(c.Request.Body)
+		fmt.Printf("request body: %s\n", body)
+		c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
 		err := c.BindJSON(&notification)
 
 		if err != nil {
@@ -54,5 +59,5 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"message": "send to wechatbot successful!"})
 
 	})
-	router.Run(addr)
+	_ = router.Run(addr)
 }
