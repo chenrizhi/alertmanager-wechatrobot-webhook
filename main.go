@@ -7,8 +7,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/k8stech/alertmanager-wechatrobot-webhook/model"
-	"github.com/k8stech/alertmanager-wechatrobot-webhook/notifier"
+	"github.com/chenrizhi/alertmanager-wechatrobot-webhook/model"
+	"github.com/chenrizhi/alertmanager-wechatrobot-webhook/notifier"
 
 	"github.com/gin-gonic/gin"
 )

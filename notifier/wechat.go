@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
-	"github.com/k8stech/alertmanager-wechatrobot-webhook/model"
-	"github.com/k8stech/alertmanager-wechatrobot-webhook/transformer"
+	"github.com/chenrizhi/alertmanager-wechatrobot-webhook/model"
+	"github.com/chenrizhi/alertmanager-wechatrobot-webhook/transformer"
 )
 
 // Send markdown message to dingtalk
@@ -49,7 +50,9 @@ func Send(notification model.Notification, defaultRobot string) (err error) {
 		return
 	}
 
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 	fmt.Println("response Status:", resp.Status)
 	fmt.Println("response Headers:", resp.Header)
 

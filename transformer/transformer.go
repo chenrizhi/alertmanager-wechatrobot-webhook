@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/k8stech/alertmanager-wechatrobot-webhook/model"
+	"github.com/chenrizhi/alertmanager-wechatrobot-webhook/model"
 )
 
 // TransformToMarkdown transform alertmanager notification to WeChat markdown message
