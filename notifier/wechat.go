@@ -6,9 +6,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/chenrizhi/alertmanager-wechatrobot-webhook/model"
 	"github.com/chenrizhi/alertmanager-wechatrobot-webhook/transformer"
+)
+
+var (
+	customWechatRobotURL string
 )
 
 // Send markdown message to dingtalk
@@ -29,6 +34,8 @@ func Send(notification model.Notification, defaultRobot string) (err error) {
 
 	if robotURL != "" {
 		wechatRobotURL = robotURL
+	} else if customWechatRobotURL != "" {
+		wechatRobotURL = customWechatRobotURL + defaultRobot
 	} else {
 		wechatRobotURL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=" + defaultRobot
 	}
@@ -57,4 +64,8 @@ func Send(notification model.Notification, defaultRobot string) (err error) {
 	fmt.Println("response Headers:", resp.Header)
 
 	return
+}
+
+func init() {
+	customWechatRobotURL = os.Getenv("WECHAT_ROBOT_URL")
 }
